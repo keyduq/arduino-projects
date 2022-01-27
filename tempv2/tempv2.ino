@@ -20,7 +20,7 @@ String humidityString;
 String currentTime;
 char temp[6];
 char humidity[4];
-char daysOfTheWeek[7][12] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+//char daysOfTheWeek[7][12] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
 
 void convertIntToChar(int data, char *output) {
   String dataString = String(data);
@@ -95,32 +95,47 @@ void loop(void) {
   Serial.print(now.month(), DEC);
   Serial.print('/');
   Serial.print(now.day(), DEC);
-  Serial.print(" (");
-  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-  Serial.print(") ");
+  //Serial.print(" (");
+  //Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  //Serial.print(") ");
   Serial.print(currentTime);
   Serial.println();
+  
   do {
-//    u8g2.setFont(u8g2_font_open_iconic_embedded_1x_t);
-//    u8g2.drawGlyph(120, 8, 80);
     u8g2.clear();
-    u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
-    u8g2.drawGlyph(32, 24, 259);
-    u8g2.drawGlyph(32, 56, 152);
-    u8g2.setFont(u8g2_font_ncenB14_tf);
     tempString = String((int)dht.readTemperature()) + "°C";
     tempString.toCharArray(temp, 6);
-    u8g2.drawUTF8(56, 24, temp);
+
+    u8g2.setFont(u8g2_font_open_iconic_all_4x_t);
+    u8g2.drawGlyph(8, 52, 259);
+
+    u8g2.setFont(u8g2_font_ncenB24_tf);
+    u8g2.drawUTF8(48, 48, temp);
+  } while ( u8g2.nextPage() );
+  
+  delay(timeChange);
+  
+  do {
+    u8g2.clear();
     humidityString = String((int)dht.readHumidity()) + "%";
     humidityString.toCharArray(humidity, 4);
-    u8g2.drawUTF8(56, 56, humidity);
+
+    u8g2.setFont(u8g2_font_open_iconic_all_4x_t);
+    u8g2.drawGlyph(8, 52, 152);
+
+    u8g2.setFont(u8g2_font_ncenB24_tf);
+    u8g2.drawUTF8(48, 48, humidity);
   } while ( u8g2.nextPage() );
+  
   delay(timeChange);
+  
   do {
     u8g2.clear();
     
-    u8g2.drawUTF8(40, 24, currentTime.c_str());
-    u8g2.drawUTF8(32, 56, daysOfTheWeek[now.dayOfTheWeek()]);
+    u8g2.setFont(u8g2_font_ncenB24_tf);
+    u8g2.drawUTF8(24, 48, currentTime.c_str());
+    //u8g2.drawUTF8(32, 56, daysOfTheWeek[now.dayOfTheWeek()]);
   } while ( u8g2.nextPage() );
+  
   delay(timeChange);
 }
